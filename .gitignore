@@ -1,3 +1,7 @@
+# Individual
+*.js
+*.map
+
 # Logs
 logs
 *.log
