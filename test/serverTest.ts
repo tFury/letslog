@@ -1,6 +1,6 @@
-import { ClientLogger, ELoglevel, EType } from "../src/index";
+import { Logger, ELoglevel, EType } from "../src/index";
 
-let logger = new ClientLogger({
+let logger = new Logger({
     baseComment: "serverTest",
     loglvl: ELoglevel.DEBUG,
     transports: [
@@ -9,6 +9,11 @@ let logger = new ClientLogger({
             showData: true,
             showLoglevel: true,
             type: EType.console
+        }, {
+            showBaseComment: true,
+            showData: true,
+            showLoglevel: true,
+            type: EType.filesystem
         }
     ]
 });

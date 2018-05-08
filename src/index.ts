@@ -1,6 +1,6 @@
+import * as fs from "fs";
 
-
-export class ClientLogger implements ILogger {
+export class Logger implements ILogger {
 
     private config: IClientConfig;
 
@@ -8,9 +8,10 @@ export class ClientLogger implements ILogger {
         this.config = this.setConfig(config);
     }
 
+    //#region public functions
     public trash(...args : any[]): void {
-        let output = this.configureOutput(args, ELoglevel.TRASH, this.config.transports[0]);
-        this.writeLog(output, ELoglevel.TRASH, EConsoleType.log);
+        let output = this.configureOutput(args, ELoglevel.TRACE, this.config.transports[0]);
+        this.writeLog(output, ELoglevel.TRACE, EConsoleType.log);
     }
 
     public debug(...args : any[]): void {
@@ -32,22 +33,53 @@ export class ClientLogger implements ILogger {
         let output = this.configureOutput(args, ELoglevel.ERROR, this.config.transports[0]);
         this.writeLog(output, ELoglevel.ERROR, EConsoleType.error);
     }
+    //#endregion
 
+    //#region private functions
     private writeLog(input: string, loglevel: number, logType: number): void {
 
-        if (loglevel >= this.config.loglvl) {
-            switch (logType) {
-                case EConsoleType.warn:
-                    console.warn(input);
-                    break;
-                case EConsoleType.error:
-                    console.error(input);
-                    break;
+        for (const transport of this.config.transports) {
 
-                default:
-                    console.log(input);
-                    break;
+            if (loglevel >= this.config.loglvl) {
+                switch (transport.type) {
+                    case EType.filesystem:
+                        this.writeTypeFilesystem(input, (transport as ITransportFs).logpath);
+                        break;
+
+                    default:
+                        this.writeTypeConsole(input, logType);
+                        break;
+                }
             }
+        }
+    }
+
+    private writeTypeFilesystem(input: string, path: string): void {
+
+        if (fs.existsSync("")) {
+            //
+        }
+
+        fs.writeFile(`${process.env.APPDATA}/test.log`, input, (error: any) => {
+            console.log("test");
+            if (error) {
+                console.error(error);
+            }
+        });
+    }
+
+    private writeTypeConsole(input: string, logType: number): void {
+        switch (logType) {
+            case EConsoleType.warn:
+                console.warn(input);
+                break;
+            case EConsoleType.error:
+                console.error(input);
+                break;
+
+            default:
+                console.log(input);
+                break;
         }
     }
 
@@ -63,6 +95,14 @@ export class ClientLogger implements ILogger {
             showBaseComment: false,
             showLoglevel: true,
             type: EType.console
+        };
+
+        let defaultTransportFs: ITransportFs = {
+            showData: true,
+            showBaseComment: false,
+            showLoglevel: true,
+            type: EType.filesystem,
+            logpath: "%appdata%/tf_log"
         };
 
         try {
@@ -82,6 +122,12 @@ export class ClientLogger implements ILogger {
                     showLoglevel: transport.showLoglevel? transport.showLoglevel: defaultTransport.showLoglevel,
                     type: transport.type? transport.type: defaultTransport.type
                 };
+
+                if (trans.type === EType.filesystem) {
+                    (trans as ITransportFs).logpath =
+                        (transport as ITransportFs).logpath? (transport as ITransportFs).logpath: defaultTransportFs.logpath;
+                }
+
                 defaultConfig.transports.push(trans);
             }
 
@@ -100,7 +146,7 @@ export class ClientLogger implements ILogger {
             returnString += transport.showBaseComment? `${this.config.baseComment.toString()} - `: ``;
 
             for (const arg of args) {
-                returnString += `${JSON.stringify(arg)}`;
+                returnString += typeof(arg)==="string"? arg: `${JSON.stringify(arg)}`;
             }
             return returnString;
         } catch (error) {
@@ -108,13 +154,19 @@ export class ClientLogger implements ILogger {
             return "ERROR, check config and input";
         }
     }
+    //#endregion
 
 }
 
+//#region interfaces
 export interface IClientConfig {
     loglvl?: ELoglevel;
     baseComment?: string;
     transports?: ITransport[];
+}
+
+interface ITransportFs extends ITransport {
+    logpath?: string;
 }
 
 interface ITransport {
@@ -131,9 +183,21 @@ interface ILogger {
     warn: () => void;
     error: () => void;
 }
+//#endregion
 
+
+//#region enums
 export enum EType {
-    console
+    console,
+    filesystem
+}
+
+export enum ELoglevel {
+    TRACE,
+    DEBUG,
+    INFO,
+    WARN,
+    ERROR
 }
 
 enum EConsoleType {
@@ -141,11 +205,4 @@ enum EConsoleType {
     warn,
     error
 }
-
-export enum ELoglevel {
-    TRASH,
-    DEBUG,
-    INFO,
-    WARN,
-    ERROR
-}
+//#endregion

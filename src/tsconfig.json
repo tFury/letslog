@@ -1,9 +1,13 @@
 {
     "compilerOptions": {
-        "module": "umd",
-        "noImplicitAny": true,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "sourceMap": true
-    }
-}
+      "target": "es6",
+      "sourceMap": true,
+      "experimentalDecorators": true,
+      "removeComments": true,
+      "emitDecoratorMetadata": true,
+      "module": "umd"
+  
+    },
+    "typeRoots": [ "node_modules/@types" ],
+    "compileOnSave": true
+  }
