@@ -1,37 +1,59 @@
 import * as fs from "fs";
+import { ELoglevel, ETransportType, EConsoleType } from "./utils/enums";
+import { ILogger, IClientConfig, ITransport, ITransportFs, IMergedConfig } from "./utils/interfaces";
+import { DefaultConsolTransport, DefaultFsTransport, BaseTransport } from "./lib/transport";
+import { connect } from "http2";
 
 export class Logger implements ILogger {
 
-    private config: IClientConfig;
+    private config: IMergedConfig;
+    private stream: fs.WriteStream;
 
     constructor(config?: IClientConfig) {
         this.config = this.setConfig(config);
+
+        for (const transport of this.config.transports) {
+            switch (transport.type) {
+                case ETransportType.filesystem:
+                    this.initializeFsLogger((transport as DefaultFsTransport));
+                    break;
+
+                case ETransportType.console:
+                    // no initialising required
+                    break;
+            }
+        }
     }
 
     //#region public functions
-    public trash(...args : any[]): void {
+    public trace(...args : any[]): string {
         let output = this.configureOutput(args, ELoglevel.TRACE, this.config.transports[0]);
         this.writeLog(output, ELoglevel.TRACE, EConsoleType.log);
+        return output;
     }
 
-    public debug(...args : any[]): void {
+    public debug(...args : any[]): string {
         let output = this.configureOutput(args, ELoglevel.DEBUG, this.config.transports[0]);
         this.writeLog(output, ELoglevel.DEBUG, EConsoleType.log);
+        return output;
     }
 
-    public info(...args : any[]): void {
+    public info(...args : any[]): string {
         let output = this.configureOutput(args, ELoglevel.INFO, this.config.transports[0]);
         this.writeLog(output, ELoglevel.INFO, EConsoleType.log);
+        return output;
     }
 
-    public warn(...args : any[]): void {
+    public warn(...args : any[]): string {
         let output = this.configureOutput(args, ELoglevel.WARN, this.config.transports[0]);
         this.writeLog(output, ELoglevel.WARN, EConsoleType.warn);
+        return output;
     }
 
-    public error(...args : any[]): void {
+    public error(...args : any[]): string {
         let output = this.configureOutput(args, ELoglevel.ERROR, this.config.transports[0]);
         this.writeLog(output, ELoglevel.ERROR, EConsoleType.error);
+        return output;
     }
     //#endregion
 
@@ -40,9 +62,9 @@ export class Logger implements ILogger {
 
         for (const transport of this.config.transports) {
 
-            if (loglevel >= this.config.loglvl) {
+            if (loglevel >= transport.loglvl) {
                 switch (transport.type) {
-                    case EType.filesystem:
+                    case ETransportType.filesystem:
                         this.writeTypeFilesystem(input, (transport as ITransportFs).logpath);
                         break;
 
@@ -56,16 +78,7 @@ export class Logger implements ILogger {
 
     private writeTypeFilesystem(input: string, path: string): void {
 
-        if (fs.existsSync("")) {
-            //
-        }
-
-        fs.writeFile(`${process.env.APPDATA}/test.log`, input, (error: any) => {
-            console.log("test");
-            if (error) {
-                console.error(error);
-            }
-        });
+        this.stream.write(`${input}\r\n`);
     }
 
     private writeTypeConsole(input: string, logType: number): void {
@@ -83,59 +96,81 @@ export class Logger implements ILogger {
         }
     }
 
-    private setConfig(config?: IClientConfig): IClientConfig {
-        let defaultConfig: IClientConfig = {
-            loglvl: ELoglevel.WARN,
-            baseComment: "",
+    private initializeFsLogger(transport: DefaultFsTransport) {
+
+        try {
+            let logPath: string = transport.logpath;
+            let folders = logPath.split("\\");
+            let rootPath = folders[0];
+            folders.shift();
+
+            for (const folder of folders) {
+                rootPath += `\\${folder}`;
+                if (!fs.existsSync(rootPath)) {
+                    fs.mkdirSync(rootPath);
+                }
+            }
+
+            this.stream = fs.createWriteStream(`${logPath}\\test.log`, {flags: "a"});
+        } catch (error) {
+            console.error("error in createWriteStream", error);
+        }
+    }
+
+    private setConfig(config?: IClientConfig): IMergedConfig {
+
+        let mergedConfig: IMergedConfig = {
             transports: []
-        };
-
-        let defaultTransport: ITransport = {
-            showData: true,
-            showBaseComment: false,
-            showLoglevel: true,
-            type: EType.console
-        };
-
-        let defaultTransportFs: ITransportFs = {
-            showData: true,
-            showBaseComment: false,
-            showLoglevel: true,
-            type: EType.filesystem,
-            logpath: "%appdata%/tf_log"
         };
 
         try {
 
             if (typeof(config) === "undefined") {
-                defaultConfig.transports.push(defaultTransport);
-                return defaultConfig;
+                let defaultTransportConsol = new DefaultConsolTransport();
+                mergedConfig.transports.push(defaultTransportConsol);
+                return mergedConfig;
             }
 
-            defaultConfig.loglvl = config.loglvl? config.loglvl: defaultConfig.loglvl;
-            defaultConfig.baseComment = config.baseComment? config.baseComment: defaultConfig.baseComment;
+            if (config.transports.length === 0) {
+                let defaultTransportConsol = new DefaultConsolTransport();
+                defaultTransportConsol.baseComment = config.baseComment?config.baseComment:defaultTransportConsol.baseComment;
+                defaultTransportConsol.loglvl = config.loglvl?config.loglvl:defaultTransportConsol.loglvl;
+                mergedConfig.transports.push(defaultTransportConsol);
+                return mergedConfig;
+            }
 
             for (const transport of config.transports) {
-                let trans: ITransport = {
-                    showBaseComment: transport.showBaseComment? transport.showBaseComment: defaultTransport.showBaseComment,
-                    showData: transport.showData? transport.showData: defaultTransport.showData,
-                    showLoglevel: transport.showLoglevel? transport.showLoglevel: defaultTransport.showLoglevel,
-                    type: transport.type? transport.type: defaultTransport.type
-                };
+                let mergedTransport = new BaseTransport();
 
-                if (trans.type === EType.filesystem) {
-                    (trans as ITransportFs).logpath =
-                        (transport as ITransportFs).logpath? (transport as ITransportFs).logpath: defaultTransportFs.logpath;
+                let base = transport.baseComment?transport.baseComment:(config.baseComment?config.baseComment:null);
+                let loglvl = transport.loglvl?transport.loglvl:(config.loglvl?config.loglvl: null);
+
+                mergedTransport.baseComment = base===null?mergedTransport.baseComment:base;
+                mergedTransport.loglvl = loglvl===null?mergedTransport.loglvl:loglvl;
+                mergedTransport.showBaseComment = transport.showBaseComment? transport.showBaseComment: mergedTransport.showBaseComment;
+                mergedTransport.showData = transport.showData? transport.showData: mergedTransport.showData;
+                mergedTransport.showLoglevel = transport.showLoglevel? transport.showLoglevel: mergedTransport.showLoglevel;
+
+                switch (transport.type) {
+                    case ETransportType.filesystem:
+                        mergedTransport = new DefaultFsTransport(mergedTransport);
+                        (mergedTransport as DefaultFsTransport).logpath = (transport as DefaultFsTransport).logpath
+                            ?(transport as DefaultFsTransport).logpath:(mergedTransport as DefaultFsTransport).logpath;
+                        break;
+
+                    default:
+                        mergedTransport = new DefaultConsolTransport(mergedTransport);
+                        break;
                 }
 
-                defaultConfig.transports.push(trans);
+                mergedConfig.transports.push(mergedTransport);
             }
 
         } catch (error) {
             console.error("error in set Config of Logger: ", error);
         }
 
-        return defaultConfig;
+        return mergedConfig;
     }
 
     private configureOutput(args: any[], loglevel:number, transport: ITransport): string {
@@ -143,7 +178,7 @@ export class Logger implements ILogger {
             let returnString: string = ``;
             returnString += transport.showData? `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - `: ``;
             returnString += transport.showLoglevel? `${ELoglevel[loglevel]} - `: ``;
-            returnString += transport.showBaseComment? `${this.config.baseComment.toString()} - `: ``;
+            returnString += transport.showBaseComment? `${transport.baseComment.toString()} - `: ``;
 
             for (const arg of args) {
                 returnString += typeof(arg)==="string"? arg: `${JSON.stringify(arg)}`;
@@ -157,52 +192,3 @@ export class Logger implements ILogger {
     //#endregion
 
 }
-
-//#region interfaces
-export interface IClientConfig {
-    loglvl?: ELoglevel;
-    baseComment?: string;
-    transports?: ITransport[];
-}
-
-interface ITransportFs extends ITransport {
-    logpath?: string;
-}
-
-interface ITransport {
-    type?: EType;
-    showData?: boolean;
-    showLoglevel?: boolean;
-    showBaseComment?: boolean;
-}
-
-interface ILogger {
-    trash: () => void;
-    debug: () => void;
-    info: () => void;
-    warn: () => void;
-    error: () => void;
-}
-//#endregion
-
-
-//#region enums
-export enum EType {
-    console,
-    filesystem
-}
-
-export enum ELoglevel {
-    TRACE,
-    DEBUG,
-    INFO,
-    WARN,
-    ERROR
-}
-
-enum EConsoleType {
-    log,
-    warn,
-    error
-}
-//#endregion

@@ -1,6 +1,10 @@
 # Individual
 *.js
 *.map
+*.txt
+src/package-lock.json
+test/package-lock.json
+
 
 # Logs
 logs
