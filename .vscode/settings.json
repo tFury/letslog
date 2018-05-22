@@ -1,6 +1,6 @@
 {
     "files.exclude": {
-        "**/*.js": true,
+        "**/*.js": false,
         "**/*.js.map": true,
         "**/*lock.json": true
     },

@@ -1,8 +1,8 @@
 //#region
 import * as chai from "chai";
-import { Logger } from "../../src/index";
+import { Logger } from "../src/index";
 import * as chaiAsPromised from "chai-as-promised";
-import { ELoglevel, ETransportType } from "../../src/utils/enums";
+import { ELoglevel, ETransportType } from "../src/utils/enums";
 //#endregion
 
 describe("checks the Logger for no input", () => {
