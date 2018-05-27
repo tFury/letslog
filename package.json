@@ -15,7 +15,7 @@
     "scripts": {
         "start": "tsc -p tsconfig.json && node ./dist/src/index",
         "build": "tsc -p tsconfigWebpack.json && tsc -p tsconfig.json && webpack",
-        "test": "tsc && mocha --recursive"
+        "test": "npm run build && cd dist && mocha --recursive"
     },
     "devDependencies": {
         "@types/chai": "4.1.3",
