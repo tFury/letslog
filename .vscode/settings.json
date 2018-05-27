@@ -3,5 +3,5 @@
         "**/*.js": false,
         "**/*.js.map": true,
         "**/*lock.json": true
-    },
+    }
 }
