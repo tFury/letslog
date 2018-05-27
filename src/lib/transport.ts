@@ -3,7 +3,7 @@ import { ELoglevel, ETransportType } from "../utils/enums";
 
 export class BaseTransport {
     loglvl: ELoglevel = ELoglevel.WARN;
-    showData: boolean = false;
+    showDate: boolean = false;
     showBaseComment: boolean = false;
     showLoglevel: boolean = true;
     baseComment: string = `Default`;
@@ -13,7 +13,7 @@ export class BaseTransport {
             this.baseComment = baseTransport.baseComment;
             this.loglvl = baseTransport.loglvl;
             this.showBaseComment = baseTransport.showBaseComment;
-            this.showData = baseTransport.showData;
+            this.showDate = baseTransport.showDate;
             this.showLoglevel = baseTransport.showLoglevel;
         }
     }

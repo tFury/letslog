@@ -147,7 +147,7 @@ class Logger implements ILogger {
                 mergedTransport.baseComment = base===null?mergedTransport.baseComment:base;
                 mergedTransport.loglvl = loglvl===null?mergedTransport.loglvl:loglvl;
                 mergedTransport.showBaseComment = transport.showBaseComment? transport.showBaseComment: mergedTransport.showBaseComment;
-                mergedTransport.showData = transport.showData? transport.showData: mergedTransport.showData;
+                mergedTransport.showDate = transport.showData? transport.showData: mergedTransport.showDate;
                 mergedTransport.showLoglevel = transport.showLoglevel? transport.showLoglevel: mergedTransport.showLoglevel;
 
                 switch (transport.type) {
