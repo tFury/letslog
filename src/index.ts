@@ -2,9 +2,8 @@ import * as fs from "fs";
 import { ELoglevel, ETransportType, EConsoleType } from "./utils/enums";
 import { ILogger, IClientConfig, ITransport, ITransportFs, IMergedConfig } from "./utils/interfaces";
 import { DefaultConsolTransport, DefaultFsTransport, BaseTransport } from "./lib/transport";
-import { connect } from "http2";
 
-export class Logger implements ILogger {
+class Logger implements ILogger {
 
     private config: IMergedConfig;
     private stream: fs.WriteStream;
@@ -192,3 +191,18 @@ export class Logger implements ILogger {
     //#endregion
 
 }
+
+export {
+    Logger,
+    ELoglevel,
+    ETransportType,
+    EConsoleType,
+    ILogger,
+    IClientConfig,
+    ITransport,
+    ITransportFs,
+    IMergedConfig,
+    DefaultConsolTransport,
+    DefaultFsTransport,
+    BaseTransport
+};

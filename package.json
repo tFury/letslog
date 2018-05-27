@@ -1,11 +1,11 @@
 {
     "name": "letslog",
-    "version": "0.0.1",
+    "version": "0.0.6",
     "author": {
         "name": "Thomas Hänig (tFury)"
     },
-    "main": "dist/src/index.js",
-    "typings": "dist/src/index.d.ts",
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
     "description": "A logger for console and file system",
     "license": "MIT",
     "repository": {
@@ -21,6 +21,7 @@
         "@types/chai": "4.1.3",
         "@types/chai-as-promised": "7.1.0",
         "@types/clean-webpack-plugin": "0.1.2",
+        "@types/copy-webpack-plugin": "4.4.1",
         "@types/mocha": "5.2.0",
         "@types/node": "10.0.4",
         "@types/source-map": "0.5.7",
@@ -28,6 +29,7 @@
         "chai": "4.1.2",
         "chai-as-promised": "7.1.1",
         "clean-webpack-plugin": "0.1.19",
+        "copy-webpack-plugin": "4.5.1",
         "mocha": "5.1.1",
         "ts-loader": "4.3.0",
         "typescript": "2.8.3",

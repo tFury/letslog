@@ -1,5 +1,6 @@
 import { Configuration } from "webpack";
 import * as CleanWebpackPlugin from "clean-webpack-plugin";
+import * as CopyWebpackPlugin from "copy-webpack-plugin";
 import * as path from "path";
 
 const config: Configuration = {
@@ -17,7 +18,9 @@ const config: Configuration = {
       extensions: [ ".js" ]
     },
     plugins: [
-        new CleanWebpackPlugin( ("dist/build"), { allowExternal: true } ),
+        new CleanWebpackPlugin(("dist/build"), {allowExternal: true}),
+        new CopyWebpackPlugin([{from: "package.json", to: "../package.json"}]),
+        new CopyWebpackPlugin([{from: "README.md", to: "../README.md"}])
     ]
 };
 
