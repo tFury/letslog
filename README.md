@@ -7,6 +7,9 @@ A simple to use logger.
 [![npm version](https://badge.fury.io/js/letslog.svg)](https://www.npmjs.com/package/letslog)
 [![Greenkeeper badge](https://badges.greenkeeper.io/tFury/letslog.svg)](https://greenkeeper.io/)
 
+## Installation
+npm i letslog
+
 ## Example 
 
 ```javascript
