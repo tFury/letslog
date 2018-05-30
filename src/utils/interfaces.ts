@@ -18,7 +18,7 @@ export interface ITransport {
     baseComment?: string;
     loglvl?: ELoglevel;
     showBaseComment?: boolean;
-    showData?: boolean;
+    showDate?: boolean;
     showLoglevel?: boolean;
     type?: ETransportType;
     logpath?: string;

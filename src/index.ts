@@ -147,7 +147,7 @@ class Logger implements ILogger {
                 mergedTransport.baseComment = base===null?mergedTransport.baseComment:base;
                 mergedTransport.loglvl = loglvl===null?mergedTransport.loglvl:loglvl;
                 mergedTransport.showBaseComment = transport.showBaseComment? transport.showBaseComment: mergedTransport.showBaseComment;
-                mergedTransport.showDate = transport.showData? transport.showData: mergedTransport.showDate;
+                mergedTransport.showDate = transport.showDate? transport.showDate: mergedTransport.showDate;
                 mergedTransport.showLoglevel = transport.showLoglevel? transport.showLoglevel: mergedTransport.showLoglevel;
 
                 switch (transport.type) {
@@ -175,7 +175,7 @@ class Logger implements ILogger {
     private configureOutput(args: any[], loglevel:number, transport: ITransport): string {
         try {
             let returnString: string = ``;
-            returnString += transport.showData? `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - `: ``;
+            returnString += transport.showDate? `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - `: ``;
             returnString += transport.showLoglevel? `${ELoglevel[loglevel]} - `: ``;
             returnString += transport.showBaseComment? `${transport.baseComment.toString()} - `: ``;
 
