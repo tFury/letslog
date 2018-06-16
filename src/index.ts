@@ -1,7 +1,17 @@
-import * as fs from "fs";
-import { ELoglevel, ETransportType, EConsoleType } from "./utils/enums";
-import { ILogger, IClientConfig, ITransport, ITransportFs, IMergedConfig } from "./utils/interfaces";
-import { DefaultConsolTransport, DefaultFsTransport, BaseTransport } from "./lib/transport";
+//#region IMPORTS
+import * as fs                      from "fs";
+import { ELoglevel,
+         ETransportType,
+         EConsoleType }             from "./utils/enums";
+import { ILogger,
+         IClientConfig,
+         ITransport,
+         ITransportFs,
+         IMergedConfig }            from "./utils/interfaces";
+import { DefaultConsolTransport,
+         DefaultFsTransport,
+         BaseTransport }            from "./lib/transport";
+//#endregion
 
 class Logger implements ILogger {
 
