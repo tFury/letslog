@@ -12,7 +12,18 @@ npm i letslog
 
 ## Example 
 
+### example for fast use
 ```javascript
+import { Logger } from "../src/index";
+const logger = new Logger();
+
+logger.warn("first output");
+```
+
+### example with transports
+```javascript
+import { Logger, ELoglevel, ETransportType } from "../src/index";
+
 const logger = new Logger({
     baseComment: "RepositoryService",
     loglvl: ELoglevel.DEBUG,
@@ -25,4 +36,47 @@ const logger = new Logger({
         }
     ]
 });
+
+logger.warn("first output");
 ```
+
+## Configuration Options
+on the toplevel you can set the following properties. When using top level properties you do not need to add thes Properties in the transports. When you set a Property in the transport, it will override the top level Propertie
+
+### options for top level
+
+
+| options       | Type              | Default Values    | Mandatory     |
+|---------------|-------------------|-------------------|---------------|
+| base Comment  | string            | none              | optional      |
+| loglvl        | ELoglevel/number  | WARN              | optional      |
+| transport     | ITransport[]      | none              | optional      |
+
+### options for transports
+
+| options           | Type                  | Default Values    | Mandatory     |
+|-------------------|-----------------------|-------------------|---------------|
+| baseComment       | string                | none              | optional      |
+| loglvl            | ELoglevel/number      | WARN              | optional      |
+| showBaseComment   | boolean               | false             | optional      |
+| showDate          | boolean               | false             | optional      |
+| showLoglevel      | boolean               | true              | optional      |
+| type              | ETransportType/number | console           | optional      |
+| logpath           | string                | none              | optional      |
+
+### types for ELoglevel
+
+| type  | value |
+|-------|-------|
+| TRACE | 0     |
+| DEBUG | 1     |
+| INFO  | 2     |
+| WARN  | 3     |
+| ERROR | 4     |
+
+### types for ETransportType
+
+| type          | value |
+|---------------|-------|
+| console       | 0     |
+| filesystem    | 1     |
