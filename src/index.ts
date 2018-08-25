@@ -142,7 +142,7 @@ class Logger implements ILogger {
             if (config.transports.length === 0) {
                 let defaultTransportConsol = new DefaultConsolTransport();
                 defaultTransportConsol.baseComment = config.baseComment?config.baseComment:defaultTransportConsol.baseComment;
-                defaultTransportConsol.loglvl = config.loglvl?config.loglvl:defaultTransportConsol.loglvl;
+                defaultTransportConsol.loglvl = typeof(config.loglvl)!=="undefined"?config.loglvl:defaultTransportConsol.loglvl;
                 mergedConfig.transports.push(defaultTransportConsol);
                 return mergedConfig;
             }
@@ -151,7 +151,8 @@ class Logger implements ILogger {
                 let mergedTransport = new BaseTransport();
 
                 let base = transport.baseComment?transport.baseComment:(config.baseComment?config.baseComment:null);
-                let loglvl = transport.loglvl?transport.loglvl:(config.loglvl?config.loglvl: null);
+                let loglvl = typeof(transport.loglvl)!=="undefined"?transport.loglvl:
+                    (typeof(config.loglvl)!=="undefined"?config.loglvl: null);
 
                 mergedTransport.baseComment = base===null?mergedTransport.baseComment:base;
                 mergedTransport.loglvl = loglvl===null?mergedTransport.loglvl:loglvl;
