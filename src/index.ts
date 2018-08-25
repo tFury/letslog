@@ -70,7 +70,6 @@ class Logger implements ILogger {
     private writeLog(input: string, loglevel: number, logType: number): void {
 
         for (const transport of this.config.transports) {
-
             if (loglevel >= transport.loglvl) {
                 switch (transport.type) {
                     case ETransportType.filesystem:

@@ -38,4 +38,29 @@ describe("checks the Logger with no additional input while declaration", () => {
             done();
         });
     });
+
+});
+
+describe("checks the Logger with baseComment, loglevel, type, showBaseComment, showDate, showLoglevel", () => {
+    let logger = new Logger({
+        transports: [
+            {
+                baseComment: "index.ts",
+                loglvl: ELoglevel.INFO,
+                type: ETransportType.console,
+                showBaseComment: true,
+                showDate: true,
+                showLoglevel: true
+            }
+        ]
+    });
+
+    describe("logger.info(\"test\")", () => {
+        it(`should return \"${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test\"`, (done) => {
+            chai.expect(logger.info("test"))
+            .to.equal(`${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test`);
+            done();
+        });
+    });
+
 });
