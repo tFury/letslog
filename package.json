@@ -23,25 +23,17 @@
         "@types/clean-webpack-plugin": "0.1.2",
         "@types/copy-webpack-plugin": "4.4.2",
         "@types/mocha": "5.2.5",
-<<<<<<< HEAD
-        "@types/node": "10.9.3",
-=======
         "@types/node": "10.9.4",
->>>>>>> origin/greenkeeper/@types/node-10.9.4
         "@types/source-map": "0.5.7",
-        "@types/webpack": "4.4.11",
+        "@types/webpack": "4.4.12",
         "chai": "4.1.2",
         "chai-as-promised": "7.1.1",
         "clean-webpack-plugin": "0.1.19",
-        "copy-webpack-plugin": "4.5.2",
+        "copy-webpack-plugin": "4.5.3",
         "mocha": "5.2.0",
         "ts-loader": "4.5.0",
         "typescript": "3.0.1",
-<<<<<<< HEAD
-        "webpack": "4.17.2",
-=======
         "webpack": "4.17.3",
->>>>>>> origin/greenkeeper/webpack-4.17.3
-        "webpack-cli": "3.1.0"
+        "webpack-cli": "3.1.1"
     }
 }
