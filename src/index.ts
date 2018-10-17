@@ -1,22 +1,27 @@
 //#region IMPORTS
-import * as fs                      from "fs";
-import { ELoglevel,
-         ETransportType,
-         EConsoleType }             from "./utils/enums";
-import { ILogger,
-         IClientConfig,
-         ITransport,
-         ITransportFs,
-         IMergedConfig }            from "./utils/interfaces";
-import { DefaultConsolTransport,
-         DefaultFsTransport,
-         BaseTransport }            from "./lib/transport";
+import {
+    ELoglevel,
+    ETransportType,
+    EConsoleType
+} from "./utils/enums";
+import {
+    ILogger,
+    IClientConfig,
+    ITransport,
+    ITransportFs,
+    IMergedConfig
+} from "./utils/interfaces";
+import {
+    DefaultConsolTransport,
+    DefaultFsTransport,
+    BaseTransport
+} from "./lib/transport";
 //#endregion
 
 class Logger implements ILogger {
 
     private config: IMergedConfig;
-    private stream: fs.WriteStream;
+    private stream: any;
 
     constructor(config?: IClientConfig) {
         this.config = this.setConfig(config);
@@ -35,31 +40,31 @@ class Logger implements ILogger {
     }
 
     //#region public functions
-    public trace(...args : any[]): string {
+    public trace(...args: any[]): string {
         let output = this.configureOutput(args, ELoglevel.TRACE, this.config.transports[0]);
         this.writeLog(output, ELoglevel.TRACE, EConsoleType.log);
         return output;
     }
 
-    public debug(...args : any[]): string {
+    public debug(...args: any[]): string {
         let output = this.configureOutput(args, ELoglevel.DEBUG, this.config.transports[0]);
         this.writeLog(output, ELoglevel.DEBUG, EConsoleType.log);
         return output;
     }
 
-    public info(...args : any[]): string {
+    public info(...args: any[]): string {
         let output = this.configureOutput(args, ELoglevel.INFO, this.config.transports[0]);
         this.writeLog(output, ELoglevel.INFO, EConsoleType.log);
         return output;
     }
 
-    public warn(...args : any[]): string {
+    public warn(...args: any[]): string {
         let output = this.configureOutput(args, ELoglevel.WARN, this.config.transports[0]);
         this.writeLog(output, ELoglevel.WARN, EConsoleType.warn);
         return output;
     }
 
-    public error(...args : any[]): string {
+    public error(...args: any[]): string {
         let output = this.configureOutput(args, ELoglevel.ERROR, this.config.transports[0]);
         this.writeLog(output, ELoglevel.ERROR, EConsoleType.error);
         return output;
@@ -105,23 +110,33 @@ class Logger implements ILogger {
     }
 
     private initializeFsLogger(transport: DefaultFsTransport) {
+        console.log("Fs Logger currently removed");
 
-        try {
-            let logPath: string = transport.logpath;
-            let folders = logPath.split("\\");
-            let rootPath = folders[0];
-            folders.shift();
+        if (false) {
 
-            for (const folder of folders) {
-                rootPath += `\\${folder}`;
-                if (!fs.existsSync(rootPath)) {
-                    fs.mkdirSync(rootPath);
+            import("fs").then(fs => {
+
+                try {
+                    let logPath: string = transport.logpath;
+                    let folders = logPath.split("\\");
+                    let rootPath = folders[0];
+                    folders.shift();
+
+                    for (const folder of folders) {
+                        rootPath += `\\${folder}`;
+                        if (!fs.existsSync(rootPath)) {
+                            fs.mkdirSync(rootPath);
+                        }
+                    }
+
+                    this.stream = fs.createWriteStream(`${logPath}\\test.log`, { flags: "a" });
+                } catch (error) {
+                    console.error("error in createWriteStream", error);
                 }
-            }
-
-            this.stream = fs.createWriteStream(`${logPath}\\test.log`, {flags: "a"});
-        } catch (error) {
-            console.error("error in createWriteStream", error);
+            })
+            .catch(() => {
+                console.warn("can not laod fs module");
+            });
         }
     }
 
@@ -133,7 +148,7 @@ class Logger implements ILogger {
 
         try {
 
-            if (typeof(config) === "undefined") {
+            if (typeof (config) === "undefined") {
                 let defaultTransportConsol = new DefaultConsolTransport();
                 mergedConfig.transports.push(defaultTransportConsol);
                 return mergedConfig;
@@ -141,8 +156,8 @@ class Logger implements ILogger {
 
             if (config.transports.length === 0) {
                 let defaultTransportConsol = new DefaultConsolTransport();
-                defaultTransportConsol.baseComment = config.baseComment?config.baseComment:defaultTransportConsol.baseComment;
-                defaultTransportConsol.loglvl = typeof(config.loglvl)!=="undefined"?config.loglvl:defaultTransportConsol.loglvl;
+                defaultTransportConsol.baseComment = config.baseComment ? config.baseComment : defaultTransportConsol.baseComment;
+                defaultTransportConsol.loglvl = typeof (config.loglvl) !== "undefined" ? config.loglvl : defaultTransportConsol.loglvl;
                 mergedConfig.transports.push(defaultTransportConsol);
                 return mergedConfig;
             }
@@ -150,21 +165,21 @@ class Logger implements ILogger {
             for (const transport of config.transports) {
                 let mergedTransport = new BaseTransport();
 
-                let base = transport.baseComment?transport.baseComment:(config.baseComment?config.baseComment:null);
-                let loglvl = typeof(transport.loglvl)!=="undefined"?transport.loglvl:
-                    (typeof(config.loglvl)!=="undefined"?config.loglvl: null);
+                let base = transport.baseComment ? transport.baseComment : (config.baseComment ? config.baseComment : null);
+                let loglvl = typeof (transport.loglvl) !== "undefined" ? transport.loglvl :
+                    (typeof (config.loglvl) !== "undefined" ? config.loglvl : null);
 
-                mergedTransport.baseComment = base===null?mergedTransport.baseComment:base;
-                mergedTransport.loglvl = loglvl===null?mergedTransport.loglvl:loglvl;
-                mergedTransport.showBaseComment = transport.showBaseComment? transport.showBaseComment: mergedTransport.showBaseComment;
-                mergedTransport.showDate = transport.showDate? transport.showDate: mergedTransport.showDate;
-                mergedTransport.showLoglevel = transport.showLoglevel? transport.showLoglevel: mergedTransport.showLoglevel;
+                mergedTransport.baseComment = base === null ? mergedTransport.baseComment : base;
+                mergedTransport.loglvl = loglvl === null ? mergedTransport.loglvl : loglvl;
+                mergedTransport.showBaseComment = transport.showBaseComment ? transport.showBaseComment : mergedTransport.showBaseComment;
+                mergedTransport.showDate = transport.showDate ? transport.showDate : mergedTransport.showDate;
+                mergedTransport.showLoglevel = transport.showLoglevel ? transport.showLoglevel : mergedTransport.showLoglevel;
 
                 switch (transport.type) {
                     case ETransportType.filesystem:
                         mergedTransport = new DefaultFsTransport(mergedTransport);
                         (mergedTransport as DefaultFsTransport).logpath = (transport as DefaultFsTransport).logpath
-                            ?(transport as DefaultFsTransport).logpath:(mergedTransport as DefaultFsTransport).logpath;
+                            ? (transport as DefaultFsTransport).logpath : (mergedTransport as DefaultFsTransport).logpath;
                         break;
 
                     default:
@@ -182,15 +197,15 @@ class Logger implements ILogger {
         return mergedConfig;
     }
 
-    private configureOutput(args: any[], loglevel:number, transport: ITransport): string {
+    private configureOutput(args: any[], loglevel: number, transport: ITransport): string {
         try {
             let returnString: string = ``;
-            returnString += transport.showDate? `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - `: ``;
-            returnString += transport.showLoglevel? `${ELoglevel[loglevel]} - `: ``;
-            returnString += transport.showBaseComment? `${transport.baseComment.toString()} - `: ``;
+            returnString += transport.showDate ? `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - ` : ``;
+            returnString += transport.showLoglevel ? `${ELoglevel[loglevel]} - ` : ``;
+            returnString += transport.showBaseComment ? `${transport.baseComment.toString()} - ` : ``;
 
             for (const arg of args) {
-                returnString += typeof(arg)==="string"? arg: `${JSON.stringify(arg)}`;
+                returnString += typeof (arg) === "string" ? arg : `${JSON.stringify(arg)}`;
             }
             return returnString;
         } catch (error) {
