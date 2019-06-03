@@ -130,15 +130,19 @@ class Logger implements ILogger {
 
             for (const folder of folders) {
                 rootPath += `${path.sep}${folder}`;
+                rootPath = path.normalize(rootPath);
+                console.log("rootPath", rootPath);
                 if (!fs.existsSync(rootPath)) {
                     fs.mkdirSync(rootPath);
                 }
             }
 
             logPath = logPath.replace("%appdata%", process.env.appdata);
+            console.log("logPath", logPath);
 
+            const filePath = path.normalize(`${logPath}${path.sep}${transport.logFileName}.log`);
 
-            this.stream = fs.createWriteStream(`${logPath}${path.sep}${transport.logFileName}.log`, { flags: "a" });
+            this.stream = fs.createWriteStream(filePath, { flags: "a" });
         } catch (error) {
             console.error("error in createWriteStream", error);
         }
