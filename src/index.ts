@@ -16,6 +16,7 @@ import {
     DefaultFsTransport,
     BaseTransport
 } from "./lib/transport";
+import * as fs from "fs";
 //#endregion
 
 class Logger implements ILogger {
@@ -110,33 +111,32 @@ class Logger implements ILogger {
     }
 
     private initializeFsLogger(transport: DefaultFsTransport) {
-        console.log("Fs Logger currently removed");
 
-        if (false) {
 
-            import("fs").then(fs => {
+        try {
+            let logPath: string = transport.logpath;
+            let folders = logPath.split("/");
+            let rootPath = folders[0];
 
-                try {
-                    let logPath: string = transport.logpath;
-                    let folders = logPath.split("\\");
-                    let rootPath = folders[0];
-                    folders.shift();
 
-                    for (const folder of folders) {
-                        rootPath += `\\${folder}`;
-                        if (!fs.existsSync(rootPath)) {
-                            fs.mkdirSync(rootPath);
-                        }
-                    }
 
-                    this.stream = fs.createWriteStream(`${logPath}\\test.log`, { flags: "a" });
-                } catch (error) {
-                    console.error("error in createWriteStream", error);
+            folders.shift();
+
+
+            rootPath = rootPath==="%appdata%"?process.env.appdata:rootPath;
+
+            for (const folder of folders) {
+                rootPath += `\\${folder}`;
+                if (!fs.existsSync(rootPath)) {
+                    fs.mkdirSync(rootPath);
                 }
-            })
-            .catch(() => {
-                console.warn("can not laod fs module");
-            });
+            }
+
+            logPath = logPath.replace("%appdata%", process.env.appdata);
+
+            this.stream = fs.createWriteStream(`${logPath}\\test.log`, { flags: "a" });
+        } catch (error) {
+            console.error("error in createWriteStream", error);
         }
     }
 
