@@ -118,27 +118,23 @@ class Logger implements ILogger {
 
             transport.logpath = transport.logpath.replace(new RegExp("/", 'g'), "\\");
 
-
             let logPath: string = transport.logpath;
             let folders = logPath.split("\\");
             let rootPath = folders[0];
 
             folders.shift();
-
-
             rootPath = rootPath === "%appdata%" ? process.env.appdata : rootPath;
 
             for (const folder of folders) {
                 rootPath += `${path.sep}${folder}`;
                 rootPath = path.normalize(rootPath);
-                console.log("rootPath", rootPath);
                 if (!fs.existsSync(rootPath)) {
                     fs.mkdirSync(rootPath);
                 }
             }
 
-            logPath = logPath.replace("%appdata%", process.env.appdata);
-            console.log("logPath", logPath);
+            rootPath = rootPath.replace("%appdata%", process.env.appdata);
+            console.log("logPath", rootPath);
 
             const filePath = path.normalize(`${logPath}${path.sep}${transport.logFileName}.log`);
 
