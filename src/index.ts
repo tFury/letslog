@@ -134,9 +134,8 @@ class Logger implements ILogger {
             }
 
             rootPath = rootPath.replace("%appdata%", process.env.appdata);
-            console.log("logPath", rootPath);
 
-            const filePath = path.normalize(`${logPath}${path.sep}${transport.logFileName}.log`);
+            const filePath = path.normalize(`${rootPath}${path.sep}${transport.logFileName}.log`);
 
             this.stream = fs.createWriteStream(filePath, { flags: "a" });
         } catch (error) {
