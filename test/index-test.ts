@@ -65,7 +65,7 @@ describe("checks the Logger with baseComment, loglevel, type, showBaseComment, s
 
 });
 
-describe("check if logger logs to fs", () => {
+xdescribe("check if logger logs to fs", () => {
     let logger = new Logger({
         transports: [
             {
@@ -87,6 +87,41 @@ describe("check if logger logs to fs", () => {
         it(`should return ${string}`, (done) => {
 
             const output = readFileSync(process.env.appdata?`${process.env.appdata}/tf_log/test.log`:"/var/log/tf_log/test.log");
+
+
+            chai.expect(output)
+            .to.equal(string);
+            done();
+        });
+    });
+
+})
+
+
+describe("check if logger logs to fs", () => {
+    let logger = new Logger({
+        transports: [
+            {
+                baseComment: "index.ts",
+                loglvl: ELoglevel.INFO,
+                logpath: "%appdata%/tf_log/testfolder",
+                logFileName: "testing",
+                type: ETransportType.filesystem,
+                showBaseComment: true,
+                showDate: true,
+                showLoglevel: true
+            }
+        ]
+    })
+
+    describe("logger.info(\"test\")", () => {
+
+        const string = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test\"`;
+        logger.info("test")
+
+        it(`should return ${string}`, (done) => {
+
+            const output = readFileSync(process.env.appdata?`${process.env.appdata}/tf_log/testing.log`:"/var/log/tf_log/testing.log");
 
 
             chai.expect(output)

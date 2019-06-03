@@ -123,7 +123,7 @@ class Logger implements ILogger {
             folders.shift();
 
 
-            rootPath = rootPath==="%appdata%"?process.env.appdata:rootPath;
+            rootPath = rootPath === "%appdata%" ? process.env.appdata : rootPath;
 
             for (const folder of folders) {
                 rootPath += `\\${folder}`;
@@ -134,7 +134,8 @@ class Logger implements ILogger {
 
             logPath = logPath.replace("%appdata%", process.env.appdata);
 
-            this.stream = fs.createWriteStream(`${logPath}\\test.log`, { flags: "a" });
+
+            this.stream = fs.createWriteStream(`${logPath}\\${transport.logFileName}.log`, { flags: "a" });
         } catch (error) {
             console.error("error in createWriteStream", error);
         }
@@ -180,6 +181,8 @@ class Logger implements ILogger {
                         mergedTransport = new DefaultFsTransport(mergedTransport);
                         (mergedTransport as DefaultFsTransport).logpath = (transport as DefaultFsTransport).logpath
                             ? (transport as DefaultFsTransport).logpath : (mergedTransport as DefaultFsTransport).logpath;
+                        (mergedTransport as DefaultFsTransport).logFileName = (transport as DefaultFsTransport).logFileName
+                            ? (transport as DefaultFsTransport).logFileName : (mergedTransport as DefaultFsTransport).logFileName;
                         break;
 
                     default:

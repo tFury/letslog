@@ -22,6 +22,7 @@ export interface ITransport {
     showLoglevel?: boolean;
     type?: ETransportType;
     logpath?: string;
+    logFileName?: string;
 }
 
 export interface ILogger {
