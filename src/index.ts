@@ -17,6 +17,7 @@ import {
     BaseTransport
 } from "./lib/transport";
 import * as fs from "fs";
+import * as path from "path";
 //#endregion
 
 class Logger implements ILogger {
@@ -114,11 +115,13 @@ class Logger implements ILogger {
 
 
         try {
+
+            transport.logpath = transport.logpath.replace(new RegExp("/", 'g'), "\\");
+
+
             let logPath: string = transport.logpath;
-            let folders = logPath.split("/");
+            let folders = logPath.split("\\");
             let rootPath = folders[0];
-
-
 
             folders.shift();
 
@@ -126,7 +129,7 @@ class Logger implements ILogger {
             rootPath = rootPath === "%appdata%" ? process.env.appdata : rootPath;
 
             for (const folder of folders) {
-                rootPath += `\\${folder}`;
+                rootPath += `${path.sep}${folder}`;
                 if (!fs.existsSync(rootPath)) {
                     fs.mkdirSync(rootPath);
                 }
@@ -135,7 +138,7 @@ class Logger implements ILogger {
             logPath = logPath.replace("%appdata%", process.env.appdata);
 
 
-            this.stream = fs.createWriteStream(`${logPath}\\${transport.logFileName}.log`, { flags: "a" });
+            this.stream = fs.createWriteStream(`${logPath}${path.sep}${transport.logFileName}.log`, { flags: "a" });
         } catch (error) {
             console.error("error in createWriteStream", error);
         }
