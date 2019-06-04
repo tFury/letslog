@@ -37,6 +37,5 @@ export class DefaultFsTransport extends BaseTransport {
 
     constructor(baseTransport?: BaseTransport) {
         super(baseTransport);
-        console.log("##########", os.homedir());
     }
 }

@@ -125,7 +125,7 @@ describe("check if logger logs to fs - 2", () => {
 
         it(`should return ${string}`, (done) => {
 
-            const output = readFileSync(process.env.appdata?`${process.env.appdata}/tf_log/testfolder/testing.log`:`${os.homedir()}/tf_log/testfolder/testing.log`, "utf8");
+            const output = readFileSync(process.env.appdata?`${process.env.appdata}\\tf_log\\testfolder\\testing.log`:`${os.homedir()}/tf_log/testfolder/testing.log`, "utf8");
 
             unlinkSync(process.env.appdata?`${process.env.appdata}\\tf_log\\testfolder\\testing.log`:`${os.homedir()}/tf_log/testfolder/testing.log`);
 
