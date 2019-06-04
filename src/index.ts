@@ -18,6 +18,7 @@ import {
 } from "./lib/transport";
 import * as fs from "fs";
 import * as path from "path";
+import * as os from "os";
 //#endregion
 
 class Logger implements ILogger {
@@ -123,7 +124,7 @@ class Logger implements ILogger {
             let rootPath = folders[0];
 
             folders.shift();
-            rootPath = rootPath === "%appdata%" ? process.env.appdata : rootPath;
+            rootPath = rootPath === "%appdata%" ? process.env.appdata : os.homedir();
 
             for (const folder of folders) {
                 rootPath += `${path.sep}${folder}`;
