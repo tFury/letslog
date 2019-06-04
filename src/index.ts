@@ -124,7 +124,7 @@ class Logger implements ILogger {
             let rootPath = folders[0];
 
             folders.shift();
-            rootPath = rootPath === "%appdata%" ? process.env.appdata : os.homedir();
+            rootPath = process.env.appdata && rootPath === "%appdata%" ? process.env.appdata : os.homedir();
 
             for (const folder of folders) {
                 rootPath += `${path.sep}${folder}`;
