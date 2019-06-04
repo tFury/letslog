@@ -1,8 +1,9 @@
 //#region
 import * as chai from "chai";
 import { Logger } from "../src/index";
-import * as chaiAsPromised from "chai-as-promised";
 import { ELoglevel, ETransportType } from "../src/utils/enums";
+import { readFileSync, unlinkSync } from "fs";
+import * as os from "os";
 //#endregion
 
 describe("checks the Logger with no additional input while declaration", () => {
@@ -64,3 +65,74 @@ describe("checks the Logger with baseComment, loglevel, type, showBaseComment, s
     });
 
 });
+
+describe("check if logger logs to fs - 1", () => {
+
+
+    let logger = new Logger({
+        transports: [
+            {
+                baseComment: "index.ts",
+                loglvl: ELoglevel.INFO,
+                type: ETransportType.filesystem,
+                showBaseComment: true,
+                showDate: true,
+                showLoglevel: true
+            }
+        ]
+    })
+
+    describe("logger.info(\"test\")", () => {
+
+        const string = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test\r\n`;
+        logger.info("test")
+
+        it(`should return ${string}`, (done) => {
+
+            const output = readFileSync(process.env.appdata?`${process.env.appdata}\\tf_log\\log.log`:`${os.homedir()}/tf_log/log.log`, "utf8");
+
+            unlinkSync(process.env.appdata?`${process.env.appdata}\\tf_log\\log.log`:`${os.homedir()}/tf_log/log.log`);
+
+            chai.expect(output)
+            .to.equal(string);
+            done();
+        });
+    });
+
+})
+
+
+describe("check if logger logs to fs - 2", () => {
+    let logger = new Logger({
+        transports: [
+            {
+                baseComment: "index.ts",
+                loglvl: ELoglevel.INFO,
+                logpath: "%appdata%/tf_log/testfolder",
+                logFileName: "testing",
+                type: ETransportType.filesystem,
+                showBaseComment: true,
+                showDate: true,
+                showLoglevel: true
+            }
+        ]
+    })
+
+    describe("logger.info(\"test\")", () => {
+
+        const string = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test\r\n`;
+        logger.info("test")
+
+        it(`should return ${string}`, (done) => {
+
+            const output = readFileSync(process.env.appdata?`${process.env.appdata}\\tf_log\\testfolder\\testing.log`:`${os.homedir()}/tf_log/testfolder/testing.log`, "utf8");
+
+            unlinkSync(process.env.appdata?`${process.env.appdata}\\tf_log\\testfolder\\testing.log`:`${os.homedir()}/tf_log/testfolder/testing.log`);
+
+            chai.expect(output)
+            .to.equal(string);
+            done();
+        });
+    });
+
+})

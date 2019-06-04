@@ -1,6 +1,6 @@
 {
     "name": "letslog",
-    "version": "1.0.4",
+    "version": "1.0.11",
     "author": {
         "name": "Thomas Hänig (tFury)"
     },
@@ -10,7 +10,7 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "..."
+        "url": "https://github.com/tFury/letslog"
     },
     "scripts": {
         "start": "tsc -p tsconfig.json && node ./dist/src/index",
