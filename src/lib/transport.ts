@@ -30,7 +30,7 @@ export class DefaultConsolTransport extends BaseTransport {
 export class DefaultFsTransport extends BaseTransport {
     type: ETransportType = ETransportType.filesystem;
 
-    logpath: string = process.env.appdata?"%appdata%/tf_log":"/var/log/tf_log";
+    logpath: string = process.env.appdata?"%appdata%/tf_log":"~/log/tf_log";
     logFileName: string = "log";
 
     constructor(baseTransport?: BaseTransport) {
