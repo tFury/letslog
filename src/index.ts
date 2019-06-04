@@ -124,7 +124,7 @@ class Logger implements ILogger {
             let rootPath = folders[0];
 
             folders.shift();
-            rootPath = process.env.appdata && rootPath === "%appdata%" ? process.env.appdata : os.homedir();
+            rootPath = process.env.appdata && rootPath === "%appdata%" ? process.env.appdata : rootPath === "%appdata%" ? os.homedir() : "";
 
             for (const folder of folders) {
                 rootPath += `${path.sep}${folder}`;
@@ -137,7 +137,7 @@ class Logger implements ILogger {
             // rootPath = rootPath.replace("%appdata%", process.env.appdata);
 
             const filePath = path.normalize(`${rootPath}${path.sep}${transport.logFileName}.log`);
-            
+
             console.log("## filePath ##", filePath);
 
             this.stream = fs.createWriteStream(filePath, { flags: "a" });
