@@ -2,7 +2,7 @@
 import * as chai from "chai";
 import { Logger } from "../src/index";
 import { ELoglevel, ETransportType } from "../src/utils/enums";
-import { readFileSync } from "fs";
+import { readFileSync, unlinkSync } from "fs";
 //#endregion
 
 describe("checks the Logger with no additional input while declaration", () => {
@@ -65,7 +65,9 @@ describe("checks the Logger with baseComment, loglevel, type, showBaseComment, s
 
 });
 
-xdescribe("check if logger logs to fs", () => {
+describe("check if logger logs to fs - 1", () => {
+
+
     let logger = new Logger({
         transports: [
             {
@@ -81,13 +83,14 @@ xdescribe("check if logger logs to fs", () => {
 
     describe("logger.info(\"test\")", () => {
 
-        const string = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test\"`;
+        const string = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test\r\n`;
         logger.info("test")
 
         it(`should return ${string}`, (done) => {
 
-            const output = readFileSync(process.env.appdata?`${process.env.appdata}/tf_log/test.log`:"/var/log/tf_log/test.log");
+            const output = readFileSync(process.env.appdata?`${process.env.appdata}\\tf_log\\log.log`:"/var/log/tf_log/log.log", "utf8");
 
+            unlinkSync(process.env.appdata?`${process.env.appdata}\\tf_log\\log.log`:"/var/log/tf_log/log.log");
 
             chai.expect(output)
             .to.equal(string);
@@ -98,7 +101,7 @@ xdescribe("check if logger logs to fs", () => {
 })
 
 
-describe("check if logger logs to fs", () => {
+describe("check if logger logs to fs - 2", () => {
     let logger = new Logger({
         transports: [
             {
@@ -116,13 +119,14 @@ describe("check if logger logs to fs", () => {
 
     describe("logger.info(\"test\")", () => {
 
-        const string = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test\"`;
+        const string = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test\r\n`;
         logger.info("test")
 
         it(`should return ${string}`, (done) => {
 
-            const output = readFileSync(process.env.appdata?`${process.env.appdata}/tf_log/testing.log`:"/var/log/tf_log/testing.log");
+            const output = readFileSync(process.env.appdata?`${process.env.appdata}/tf_log/testfolder/testing.log`:"/var/log/tf_log/testfolder/testing.log", "utf8");
 
+            unlinkSync(process.env.appdata?`${process.env.appdata}\\tf_log\\testfolder\\testing.log`:"/var/log/tf_log/testfolder/testing.log");
 
             chai.expect(output)
             .to.equal(string);

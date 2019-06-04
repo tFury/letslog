@@ -10,7 +10,7 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "..."
+        "url": "https://github.com/tFury/letslog"
     },
     "scripts": {
         "start": "tsc -p tsconfig.json && node ./dist/src/index",
