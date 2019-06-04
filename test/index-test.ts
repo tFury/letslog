@@ -89,9 +89,9 @@ describe("check if logger logs to fs - 1", () => {
 
         it(`should return ${string}`, (done) => {
 
-            const output = readFileSync(process.env.appdata?`${process.env.appdata}\\tf_log\\log.log`:`${os.homedir}/log/tf_log/log.log`, "utf8");
+            const output = readFileSync(process.env.appdata?`${process.env.appdata}\\tf_log\\log.log`:`${os.homedir()}/log/tf_log/log.log`, "utf8");
 
-            unlinkSync(process.env.appdata?`${process.env.appdata}\\tf_log\\log.log`:`${os.homedir}/log/tf_log/log.log`);
+            unlinkSync(process.env.appdata?`${process.env.appdata}\\tf_log\\log.log`:`${os.homedir()}/log/tf_log/log.log`);
 
             chai.expect(output)
             .to.equal(string);
@@ -125,9 +125,9 @@ describe("check if logger logs to fs - 2", () => {
 
         it(`should return ${string}`, (done) => {
 
-            const output = readFileSync(process.env.appdata?`${process.env.appdata}/tf_log/testfolder/testing.log`:`${os.homedir}/log/tf_log/testfolder/testing.log`, "utf8");
+            const output = readFileSync(process.env.appdata?`${process.env.appdata}/tf_log/testfolder/testing.log`:`${os.homedir()}/log/tf_log/testfolder/testing.log`, "utf8");
 
-            unlinkSync(process.env.appdata?`${process.env.appdata}\\tf_log\\testfolder\\testing.log`:`${os.homedir}/log/tf_log/testfolder/testing.log`);
+            unlinkSync(process.env.appdata?`${process.env.appdata}\\tf_log\\testfolder\\testing.log`:`${os.homedir()}/log/tf_log/testfolder/testing.log`);
 
             chai.expect(output)
             .to.equal(string);
