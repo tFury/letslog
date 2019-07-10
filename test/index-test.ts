@@ -84,7 +84,7 @@ describe("check if logger logs to fs - 1", () => {
 
     describe("logger.info(\"test\")", () => {
 
-        const string = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test\r\n`;
+        const string = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test${os.EOL}`;
         logger.info("test")
 
         it(`should return ${string}`, (done) => {
@@ -120,7 +120,7 @@ describe("check if logger logs to fs - 2", () => {
 
     describe("logger.info(\"test\")", () => {
 
-        const string = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test\r\n`;
+        const string = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test${os.EOL}`;
         logger.info("test")
 
         it(`should return ${string}`, (done) => {
@@ -130,6 +130,45 @@ describe("check if logger logs to fs - 2", () => {
             unlinkSync(process.env.appdata?`${process.env.appdata}\\tf_log\\testfolder\\testing.log`:`${os.homedir()}/tf_log/testfolder/testing.log`);
 
             chai.expect(output)
+            .to.equal(string);
+            done();
+        });
+    });
+
+})
+
+
+describe("line break test", () => {
+    let logger = new Logger({
+        transports: [
+            {
+                baseComment: "index.ts",
+                loglvl: ELoglevel.INFO,
+                logpath: "%appdata%/tf_log/testfolder",
+                logFileName: "testLineBreak",
+                type: ETransportType.filesystem,
+                showBaseComment: false,
+                showDate: false,
+                showLoglevel: true
+            }
+        ]
+    })
+
+    describe("read in log after writing several logs", () => {
+
+        const string = `INFO - line 1`;
+        logger.info("line 1");
+        logger.info("line 2");
+
+        it(`should return "line 1"`, (done) => {
+
+            const output = readFileSync(process.env.appdata?`${process.env.appdata}\\tf_log\\testfolder\\testLineBreak.log`:`${os.homedir()}/tf_log/testfolder/testLineBreak.log`, "utf8");
+
+            const logs = output.split(os.EOL);
+
+            unlinkSync(process.env.appdata?`${process.env.appdata}\\tf_log\\testfolder\\testLineBreak.log`:`${os.homedir()}/tf_log/testfolder/testLineBreak.log`);
+
+            chai.expect(logs[0])
             .to.equal(string);
             done();
         });
