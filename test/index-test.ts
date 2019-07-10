@@ -84,7 +84,7 @@ describe("check if logger logs to fs - 1", () => {
 
     describe("logger.info(\"test\")", () => {
 
-        const string = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test\r\n`;
+        const string = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test${os.EOL}`;
         logger.info("test")
 
         it(`should return ${string}`, (done) => {
@@ -120,7 +120,7 @@ describe("check if logger logs to fs - 2", () => {
 
     describe("logger.info(\"test\")", () => {
 
-        const string = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test\r\n`;
+        const string = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - INFO - index.ts - test${os.EOL}`;
         logger.info("test")
 
         it(`should return ${string}`, (done) => {
@@ -160,19 +160,13 @@ describe("line break test", () => {
         logger.info("line 1");
         logger.info("line 2");
 
-        it(`should return`, (done) => {
+        it(`should return "line 1"`, (done) => {
 
             const output = readFileSync(process.env.appdata?`${process.env.appdata}\\tf_log\\testfolder\\testLineBreak.log`:`${os.homedir()}/tf_log/testfolder/testLineBreak.log`, "utf8");
 
             const logs = output.split(os.EOL);
 
-            console.log("###", logs[0]);
-
-
-
-
             unlinkSync(process.env.appdata?`${process.env.appdata}\\tf_log\\testfolder\\testLineBreak.log`:`${os.homedir()}/tf_log/testfolder/testLineBreak.log`);
-
 
             chai.expect(logs[0])
             .to.equal(string);
