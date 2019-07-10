@@ -94,7 +94,7 @@ class Logger implements ILogger {
 
     private writeTypeFilesystem(input: string, path: string): void {
 
-        this.stream.write(`${input}\r\n`);
+        this.stream.write(`${input}${os.EOL}`);
 
     }
 
