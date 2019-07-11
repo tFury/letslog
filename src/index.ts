@@ -24,7 +24,7 @@ import * as os from "os";
 class Logger implements ILogger {
 
     private config: IMergedConfig;
-    private stream: any;
+    private stream: fs.WriteStream;
 
     constructor(config?: IClientConfig) {
         this.config = this.setConfig(config);
@@ -94,7 +94,8 @@ class Logger implements ILogger {
 
     private writeTypeFilesystem(input: string, path: string): void {
 
-        this.stream.write(`${input}\r\n`);
+        this.stream.write(`${input}${os.EOL}`);
+
     }
 
     private writeTypeConsole(input: string, logType: number): void {
@@ -137,8 +138,6 @@ class Logger implements ILogger {
             // rootPath = rootPath.replace("%appdata%", process.env.appdata);
 
             const filePath = path.normalize(`${rootPath}${path.sep}${transport.logFileName}.log`);
-
-            console.log("## filePath ##", filePath);
 
             this.stream = fs.createWriteStream(filePath, { flags: "a" });
         } catch (error) {
