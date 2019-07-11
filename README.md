@@ -15,7 +15,7 @@ npm i letslog
 
 ### example for fast use
 ```javascript
-import { Logger } from "../src/index";
+import { Logger } from "letslog";
 const logger = new Logger();
 
 logger.warn("first output");
@@ -23,7 +23,7 @@ logger.warn("first output");
 
 ### example with transports
 ```javascript
-import { Logger, ELoglevel, ETransportType } from "../src/index";
+import { Logger, ELoglevel, ETransportType } from "letslog";
 
 const logger = new Logger({
     baseComment: "RepositoryService",
@@ -44,7 +44,7 @@ logger.warn("first output");
 
 ### example with transports for console and fs
 ```javascript
-import { Logger, ELoglevel, ETransportType } from "../src/index";
+import { Logger, ELoglevel, ETransportType } from "letslog";
 
 const logger = new Logger({
     baseComment: "RepositoryService",
