@@ -21,7 +21,7 @@
         "@types/chai": "4.2.5",
         "@types/chai-as-promised": "7.1.1",
         "@types/clean-webpack-plugin": "0.1.3",
-        "@types/copy-webpack-plugin": "5.0.0",
+        "@types/copy-webpack-plugin": "6.0.0",
         "@types/mocha": "5.2.7",
         "@types/node": "12.12.9",
         "@types/source-map": "0.5.7",
